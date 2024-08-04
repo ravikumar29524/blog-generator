@@ -84,9 +84,48 @@ function App() {
     setMarkdown('');
 
     try {
-      const response = await axios.get(rawFileUrl);
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      setMarkdown(response.data);
+
+
+let data = JSON.stringify({
+  "input": {
+    "topic": rawFileUrl
+  },
+  "config": {}
+});
+
+// let config = {
+//   method: 'post',
+//   maxBodyLength: Infinity,
+//   url: 'http://127.0.0.1:8000/v2/invoke',
+//   headers: { 
+//     'Content-Type': 'application/json'
+//   },
+//   data : data
+// };
+
+// axios.request(config)
+// .then((response) => {
+//   console.log(JSON.stringify(response.data));
+// })
+// .catch((error) => {
+//   console.log(error);
+// });
+
+
+
+  const response = await axios({
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://8zdhdl5q-8000.inc1.devtunnels.ms/v2/invoke',
+      headers: { 
+        'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+      },
+      data : data
+    })
+
+      const content = response.data.output.output.content;
+      setMarkdown(content);
     } catch (err) {
       setError('Failed to fetch markdown content. Please make sure the GitHub raw file URL is correct.');
       console.error('Error:', err);
